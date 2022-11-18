@@ -6,7 +6,7 @@ import random
 class Board:
     def __init__(self):
         # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('110011111110110101110010010110010101110001000110100000110011000', base=2)
+        self.board = int('000000000000000000000000000000000000000000000000000000001000001', base=2)
         self.board_string=f"{self.board:#063b}"
         print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -29,7 +29,7 @@ class Board:
                     print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = 1 << (c * 9 + row_indictor)
-                neighbours.append(bin(self.update_row_indicator(play | b,c)))
+                neighbours.append((bin(self.update_row_indicator(play | b, c)),c))
 
         else :
             for c in range(0, 7, 1):
@@ -38,7 +38,7 @@ class Board:
                     print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = (1 << (c * 9 + row_indictor)) ^int('7FFFFFFFFFFFFFFF', base=16)
-                neighbours.append(bin(self.update_row_indicator(play & b,c)))
+                neighbours.append((bin(self.update_row_indicator(play & b, c)),c))
 
         return neighbours
 
@@ -187,17 +187,17 @@ class Board:
 if __name__ == '__main__':
     b = Board()
     i=0
-
-    while 1:
-        p0_score, p1_score = b.checkwin()
-        print("Player0 score:\n", p0_score)
-        print("Player1 score:\n", p1_score)
-        if i % 2:
-           var=input("go on P0 : ")
-           b.insert(int(var), 1)
-           print(b.get_neighbours(b.board, 0))
-        else:
-           var=input("go on P1 : ")
-           b.insert(int(var), 0)
-           print(b.get_neighbours(b.board,1))
-        i+=1
+    print(b.get_neighbours(int("000000000000000000000000000000000000000000000000000000010000001",base=2),1))
+    # while 1:
+    #     p0_score, p1_score = b.checkwin()
+    #     print("Player0 score:\n", p0_score)
+    #     print("Player1 score:\n", p1_score)
+    #     if i % 2:
+    #        var=input("go on P0 : ")
+    #        b.insert(int(var), 1)
+    #        print(b.get_neighbours(b.board, 0))
+    #     else:
+    #        var=input("go on P1 : ")
+    #        b.insert(int(var), 0)
+    #        print(b.get_neighbours(b.board,1))
+    #     i+=1
