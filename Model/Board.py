@@ -6,9 +6,9 @@ import random
 class Board:
     def __init__(self):
         # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('00000000000000000000000000000000000000000000000000000000', base=2)
+        self.board = int('110011111110110101110010010110010101110001000110100000110011000', base=2)
         self.board_string=f"{self.board:#063b}"
-        print(f"{self.board:#063b}")
+        print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
         self.p0_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
         self.p1_Vmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -17,6 +17,7 @@ class Board:
         self.p0_D1mask =int('7FFFFFFFFFFFFFFF', base=16)
         self.p1_D2mask= int('7FFFFFFFFFFFFFFF', base=16)
         self.p0_D2mask = int('7FFFFFFFFFFFFFFF', base=16)
+
 
 
     def get_neighbours(self,b,player):
@@ -136,71 +137,67 @@ class Board:
         invboard = invboard & ((c6 << 54)+ 18014398509481983)
         return invboard
     def checkwin(self):
-        p0_score=0
-        p1_score=0
         invboard=self.invert_board(self.board)
-        # print(bin(invboard))
-        board=self.board & int('000111111000111111000111111000111111000111111000111111000111111',base=2)
-        temp = (board & (board >> 1) & (board >> 2) & (board >> 3)) & self.p1_Vmask
 
+        board=self.board & int('000111111000111111000111111000111111000111111000111111000111111',base=2)
+
+        temp = (board & (board >> 1) & (board >> 2) & (board >> 3)) & self.p1_Vmask
         if (temp != 0):#vertical
             self.p1_Vmask &= temp ^int('7FFFFFFFFFFFFFFF', base=16)
             print("vwinner",bin(self.p1_Vmask))
-        temp=(board & (board >> 10) & (board >> 20) & (board >> 30)) & self.p1_Hmask
+
+        temp=(board & (board >> 9) & (board >> 18) & (board >> 27)) & self.p1_Hmask
         if (temp != 0): #horizontal
             self.p1_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("hwinner")
+
+
         temp=(board & (board >> 8) & (board >> 16) & (board >> 24)) & self.p1_D1mask
-        # print("test", f"{board:#065b}")
-        # print("test",f"{board >> 8:#065b}")
-        # print("test", f"{board >> 16:#065b}")
-        # print("test", f"{board >> 24:#065b}")
         if (temp != 0): #diagonal/
             self.p1_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("d1winner")
-        temp=(board & (board >> 11) & (board >> 22) & (board >> 33)) & self.p1_D2mask
+
+        temp=(board & (board >> 10) & (board >> 20) & (board >> 30)) & self.p1_D2mask
         if (temp != 0):#diagonal\
             self.p1_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("d2winner")
+
         p1_score=self.count_win(self.p1_Vmask) + self.count_win(self.p1_Hmask) + self.count_win(self.p1_D2mask) + self.count_win(self.p1_D1mask)
-        ######################################################################33
+        ##########################################################################################################################################
+
         temp=(invboard & (invboard >> 1) & (invboard >> 2) & (invboard >> 3)) & self.p0_Vmask
-        if (temp != 0):#vertical
+        if (temp != 0):# vertical
             self.p0_Vmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("vp0winner")
-        temp=(invboard & (invboard >> 10) & (invboard >> 20) & (invboard >> 30)) & self.p0_Hmask
-        if (temp != 0): #horizontal
+        temp=(invboard & (invboard >> 9) & (invboard >> 18) & (invboard >> 27)) & self.p0_Hmask
+        if (temp != 0): # horizontal
             self.p0_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("hp0winner")
         temp=(invboard & (invboard >> 8) & (invboard >> 16) & (invboard >> 24)) & self.p0_D1mask
-        if (temp != 0): #diagonal/
+        if (temp != 0): # diagonal /
             self.p0_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("d1p0winner")
-        temp=invboard & (invboard >> 6 ) & (invboard >> 12) & (invboard >> 18) & self.p0_D2mask
-        # print("test", f"{invboard:#065b}")
-        # print("test", f"{invboard >> 6:#065b}")
-        # print("test", f"{invboard >> 12:#065b}")
-        # print("test", f"{invboard >> 18:#065b}")
-        if (temp != 0):#diagonal\
+        temp=invboard & (invboard >> 10 ) & (invboard >> 20) & (invboard >> 30) & self.p0_D2mask
+        if (temp != 0):# diagonal\
             self.p0_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             print("d2p0winner")
         p0_score=self.count_win(self.p0_Vmask) + self.count_win(self.p0_Hmask) + self.count_win(self.p0_D2mask) + self.count_win(self.p0_D1mask)
         return p0_score,p1_score
+
 if __name__ == '__main__':
     b = Board()
     i=0
-    # b.get_available_positions()
-    # b.neighbours[0]
+
     while 1:
         p0_score, p1_score = b.checkwin()
         print("Player0 score:\n", p0_score)
         print("Player1 score:\n", p1_score)
         if i % 2:
-           var=input("go on P1 : ")
+           var=input("go on P0 : ")
            b.insert(int(var), 1)
            print(b.get_neighbours(b.board, 0))
         else:
-           var=input("go on P0 : ")
+           var=input("go on P1 : ")
            b.insert(int(var), 0)
            print(b.get_neighbours(b.board,1))
         i+=1
