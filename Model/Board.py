@@ -127,7 +127,7 @@ class Board:
         c4 = pow(2,self.get_row_indicator(b,4))-1
         c5 = pow(2,self.get_row_indicator(b,5))-1
         c6 = pow(2,self.get_row_indicator(b,6))-1
-        invboard = self.board ^ int('7FFFFFFFFFFFFFFF', base=16)
+        invboard = b ^ int('7FFFFFFFFFFFFFFF', base=16)
         invboard=invboard & c0 + 9223372036854775296
         invboard = invboard & ((c1 << 9) + 9223372036854514175)
         invboard = invboard & ((c2 << 18) + 9223372036720820223)
@@ -136,31 +136,32 @@ class Board:
         invboard = invboard & ((c5 << 45)+ 9205392822717382655)
         invboard = invboard & ((c6 << 54)+ 18014398509481983)
         return invboard
-    def checkwin(self):
-        invboard=self.invert_board(self.board)
 
-        board=self.board & int('000111111000111111000111111000111111000111111000111111000111111',base=2)
+    def get_4_score(self, board):
+        invboard=self.invert_board(board)
+
+        board &= int('000111111000111111000111111000111111000111111000111111000111111',base=2)
 
         temp = (board & (board >> 1) & (board >> 2) & (board >> 3)) & self.p1_Vmask
         if (temp != 0):#vertical
             self.p1_Vmask &= temp ^int('7FFFFFFFFFFFFFFF', base=16)
-            print("vwinner",bin(self.p1_Vmask))
+            # print("vwinner",bin(self.p1_Vmask))
 
         temp=(board & (board >> 9) & (board >> 18) & (board >> 27)) & self.p1_Hmask
         if (temp != 0): #horizontal
             self.p1_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("hwinner")
+            # print("hwinner")
 
 
         temp=(board & (board >> 8) & (board >> 16) & (board >> 24)) & self.p1_D1mask
         if (temp != 0): #diagonal/
             self.p1_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("d1winner")
+            # print("d1winner")
 
         temp=(board & (board >> 10) & (board >> 20) & (board >> 30)) & self.p1_D2mask
         if (temp != 0):#diagonal\
             self.p1_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("d2winner")
+            # print("d2winner")
 
         p1_score=self.count_win(self.p1_Vmask) + self.count_win(self.p1_Hmask) + self.count_win(self.p1_D2mask) + self.count_win(self.p1_D1mask)
         ##########################################################################################################################################
@@ -168,19 +169,19 @@ class Board:
         temp=(invboard & (invboard >> 1) & (invboard >> 2) & (invboard >> 3)) & self.p0_Vmask
         if (temp != 0):# vertical
             self.p0_Vmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("vp0winner")
+            # print("vp0winner")
         temp=(invboard & (invboard >> 9) & (invboard >> 18) & (invboard >> 27)) & self.p0_Hmask
         if (temp != 0): # horizontal
             self.p0_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("hp0winner")
+            # print("hp0winner")
         temp=(invboard & (invboard >> 8) & (invboard >> 16) & (invboard >> 24)) & self.p0_D1mask
         if (temp != 0): # diagonal /
             self.p0_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("d1p0winner")
+            # print("d1p0winner")
         temp=invboard & (invboard >> 10 ) & (invboard >> 20) & (invboard >> 30) & self.p0_D2mask
         if (temp != 0):# diagonal\
             self.p0_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
-            print("d2p0winner")
+            # print("d2p0winner")
         p0_score=self.count_win(self.p0_Vmask) + self.count_win(self.p0_Hmask) + self.count_win(self.p0_D2mask) + self.count_win(self.p0_D1mask)
         return p0_score,p1_score
 
@@ -188,6 +189,7 @@ if __name__ == '__main__':
     b = Board()
     i=0
     print(b.get_neighbours(int("000000000000000000000000000000000000000000000000000000010000001",base=2),1))
+    print(b.get_4_score(int("110011111110110101110010010110010101110001000110100000110011000", base=2)))
     # while 1:
     #     p0_score, p1_score = b.checkwin()
     #     print("Player0 score:\n", p0_score)
