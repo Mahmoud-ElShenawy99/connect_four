@@ -6,7 +6,7 @@ import random
 class Board:
     def __init__(self):
         # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('000000000000000000000000000000000000000000000000000000110000010', base=2)
+        self.board = int('011000000000000000000000000000000000000000000000000000011000111', base=2)
         self.board_string=f"{self.board:#063b}"
         print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -29,7 +29,7 @@ class Board:
                     print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = 1 << (c * 9 + row_indictor)
-                neighbours.append((bin(self.update_row_indicator(play | b, c)),c))
+                neighbours.append((self.update_row_indicator(play | b, c),c))
 
         else :
             for c in range(0, 7, 1):
@@ -38,7 +38,7 @@ class Board:
                     print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = (1 << (c * 9 + row_indictor)) ^int('7FFFFFFFFFFFFFFF', base=16)
-                neighbours.append((bin(self.update_row_indicator(play & b, c)),c))
+                neighbours.append((self.update_row_indicator(play & b, c),c))
 
         return neighbours
     def reset_masks(self):
@@ -96,9 +96,12 @@ class Board:
             else:
                 zeros+=1
             mask >>= 1;
+        # print("Total zero bit is\n", zeros);
+        # print("Total one bit is", ones);
         return zeros;
 
     def update_row_indicator(self,b, col):
+
         if col == 0:
             row_indictor = self.get_row_indicator(b,col)
             clear = int('7FFFFFFFFFFFFE3F', base=16)
