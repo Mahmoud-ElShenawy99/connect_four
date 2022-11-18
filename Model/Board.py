@@ -6,7 +6,7 @@ import random
 class Board:
     def __init__(self):
         # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('000000000000000000000000000000000000000000000000000000001000001', base=2)
+        self.board = int('000000000000000000000000000000000000000000000000000000110000010', base=2)
         self.board_string=f"{self.board:#063b}"
         print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -41,6 +41,15 @@ class Board:
                 neighbours.append((bin(self.update_row_indicator(play & b, c)),c))
 
         return neighbours
+    def reset_masks(self):
+        self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
+        self.p0_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
+        self.p1_Vmask=int('7FFFFFFFFFFFFFFF', base=16)
+        self.p0_Vmask=int('7FFFFFFFFFFFFFFF', base=16)
+        self.p1_D1mask= int('7FFFFFFFFFFFFFFF', base=16)
+        self.p0_D1mask =int('7FFFFFFFFFFFFFFF', base=16)
+        self.p1_D2mask= int('7FFFFFFFFFFFFFFF', base=16)
+        self.p0_D2mask = int('7FFFFFFFFFFFFFFF', base=16)
 
     def insert(self, col, player):
         if col > 6:
@@ -87,12 +96,9 @@ class Board:
             else:
                 zeros+=1
             mask >>= 1;
-        # print("Total zero bit is\n", zeros);
-        # print("Total one bit is", ones);
         return zeros;
 
     def update_row_indicator(self,b, col):
-
         if col == 0:
             row_indictor = self.get_row_indicator(b,col)
             clear = int('7FFFFFFFFFFFFE3F', base=16)
@@ -183,6 +189,7 @@ class Board:
             self.p0_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
             # print("d2p0winner")
         p0_score=self.count_win(self.p0_Vmask) + self.count_win(self.p0_Hmask) + self.count_win(self.p0_D2mask) + self.count_win(self.p0_D1mask)
+        self.reset_masks()
         return p0_score,p1_score
 
 if __name__ == '__main__':
