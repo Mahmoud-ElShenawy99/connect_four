@@ -3,12 +3,13 @@ import time
 from Model.Board import Board
 from PyQt5 import QtWidgets
 from View.MainWindow import Ui_GUI
-
+from Model.Minmax import Minmax
 
 class MainWindowController(QtWidgets.QMainWindow):
     def __init__(self):
-        self.board = Board()
         QtWidgets.QMainWindow.__init__(self)
+        self.board = Board()
+        self.minmax=Minmax()
         self.ui = Ui_GUI()
         self.ui.setupUi(self)
         self.ui.B1.clicked.connect(
@@ -38,6 +39,7 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.ui.l55.mouseDoubleClickEvent= lambda _: self.play(5,self.player_turn)
         self.ui.l65.mouseDoubleClickEvent= lambda _: self.play(6,self.player_turn)
         self.change_state(self.board.board)
+
     def change_state(self, state: int):
         c = [self.board.get_row_indicator(state, 0),
              self.board.get_row_indicator(state, 1),
@@ -56,16 +58,19 @@ class MainWindowController(QtWidgets.QMainWindow):
                     self.col[j][i].setStyleSheet(self.player1_style)
 
         
-    def AI(self):
-        col = random.randint(0, 6)
-        print(col)
-        self.board.insert(col, 1)
+
 
     def play(self, col,player):
         if ( not self.board.insert(col,player)):
             return
         self.change_state(self.board.board)
-        self.player_turn ^= 1
+        x1=time.time()
+        x=self.minmax.minmax_mutli((self.board.board,-1),4)
+        x2=time.time()
+        print("time",str(x2-x1))
+        self.board.insert(x[0][1],1)
+        self.change_state(self.board.board)
+
 
     def hello(self):
         print("S")

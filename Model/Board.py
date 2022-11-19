@@ -7,8 +7,8 @@ import numpy as np
 class Board:
     def __init__(self):
         # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('0000000000000000000000000000000000000000000000000000000000000000', base=2)
-        self.board_string=f"{self.board:#065b}"
+        self.board = int('00000000000000000000000000000000000000000000000000000000', base=2)
+        self.board_string=f"{self.board:#063b}"
         print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
         self.p0_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -18,7 +18,7 @@ class Board:
         self.p0_D1mask =int('7FFFFFFFFFFFFFFF', base=16)
         self.p1_D2mask= int('7FFFFFFFFFFFFFFF', base=16)
         self.p0_D2mask = int('7FFFFFFFFFFFFFFF', base=16)
-        # self.numberOfThrees=[]
+
 
     def reset_masks(self):
         self.p1_Hmask = int('7FFFFFFFFFFFFFFF', base=16)
@@ -35,10 +35,10 @@ class Board:
             for c in range(0,7,1):
                 row_indictor = self.get_row_indicator(b,c)
                 if row_indictor > 5:
-                    print("[GET_NEIGHBOURS] Full Column")
+                    # print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = 1 << (c * 9 + row_indictor)
-                neighbours.append((bin(self.update_row_indicator(play | b, c)),c))
+                neighbours.append((self.update_row_indicator(play | b, c),c))
 
         else :
             for c in range(0, 7, 1):
@@ -47,17 +47,17 @@ class Board:
                     print("[GET_NEIGHBOURS] Full Column")
                     continue
                 play = (1 << (c * 9 + row_indictor)) ^int('7FFFFFFFFFFFFFFF', base=16)
-                neighbours.append((bin(self.update_row_indicator(play & b, c)),c))
+                neighbours.append((self.update_row_indicator(play & b, c),c))
 
         return neighbours
 
     def insert(self, col, player):
         if col > 6:
-            print("[Board] Wrong Column")
+            # print("[Board] Wrong Column")
             return False
         row_indictor = self.get_row_indicator(self.board,col)
         if row_indictor > 5:
-            print("[Board] Full Column")
+            # print("[Board] Full Column")
             return False
         if player == 1:
             play = 1 << (col * 9 + row_indictor)
@@ -68,8 +68,7 @@ class Board:
             self.board = play & self.board
             self.board=self.update_row_indicator(self.board,col)
         self.board_string=f"{self.board:#065b}"
-        print("[Board After Insertion] "+f"{self.board:#065b}")
-        self.get_3_score(self.board)
+        # print("[Board After Insertion] "+f"{self.board:#065b}")
         return True
 
     def get_row_indicator(self,b, col):
