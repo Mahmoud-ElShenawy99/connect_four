@@ -1,6 +1,7 @@
 # module_name, package_name, ClassName, method_name, ExceptionName, function_name,
 # GLOBAL_CONSTANT_NAME, global_var_name, instance_var_name, function_parameter_name, local_var_name.
 import random
+import numpy as np
 
 
 class Board:
@@ -200,6 +201,144 @@ if __name__ == '__main__':
     i=0
     print(b.get_neighbours(int("000000000000000000000000000000000000000000000000000000010000001",base=2),1))
     print(b.get_4_score(int("110011111110110101110010010110010101110001000110100000110011000", base=2)))
+        return p0_score,p1_score
+
+    def convert_numpy(self):
+        arr = -1 * np.ones((6, 7), dtype=int)
+        board = self.board_string
+        invboard = f"{self.invert_board(b.board):#065b}"
+        for i in range(7):
+            k = 0
+            c = board[5 + (i * 9):11 + (i * 9)]
+            c2 = invboard[5 + (i * 9):11 + (i * 9)]
+            print("coloumn", i, c)
+            for j in c:
+                if (j == "1"):
+                    print(j)
+                    arr[k][i] = j
+                k = k + 1
+            k = 0
+            for j2 in c2:
+                if (j2 == "1"):
+                    print(j)
+                    arr[k][i] = 0
+                k = k + 1
+        return arr
+
+    def get_3_score(self, board):
+        invboard = self.invert_board(board)
+
+        board &= int('000111111000111111000111111000111111000111111000111111000111111', base=2)
+        # temp = (board & (board >> 1) & (board >> 2)) & self.p1_Vmask
+        print("invboard 7a: ", f"{invboard:#065b}")
+        #
+        # if (temp != 0):  # vertical
+        #     # print("board: ", f"{board:#065b}")
+        #     # print("board: ", f"{board >> 1:#065b}")
+        #     # print("board: ", f"{board >> 2:#065b}")
+        #     print("invboard: ", f"{invboard:#065b}")
+        #     x = temp & (invboard >> 3)
+        #     print(bin(x), "x:")
+        #     if (x == 0):
+        #         self.p1_Vmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+        #         print("vwinner", bin(self.p1_Vmask))
+        temp = (board & (board >> 9) & (board >> 18)) #& self.p1_Hmask
+        temp2 = ((board >> 9) & (board >> 18)&(board >>27))# & self.p1_D1mask
+        # print("invboard: ", f"{m:#065b}")
+        # print("invboard: ", f"{temp:#065b}")
+        x = (temp & (invboard >> 27))
+        x2 = temp2 & ((invboard))
+
+        if (temp != 0):  # horizontal
+            if (x == 0 ):
+                self.p1_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+                print("hwinner", bin(self.p1_Hmask))
+                print("enterd ")
+            x2 = temp2 & ((board >> 27))# self.calculation(27))
+        if (temp2 != 0):
+            if (x2 == 0):
+                self.p1_Hmask &= temp2 ^ int('7FFFFFFFFFFFFFFF', base=16)
+                print("hwinner", bin(self.p1_Hmask))
+                print("enterd 2")
+        print("temp", temp)
+        print("temp2", temp2)
+        print("x:", x)
+        print("x2:", x2)
+    #     temp = (board & (board >> 8) & (board >> 16)) & self.p1_D1mask
+    #     temp2 = (invboard & (board >> 8) & (board >> 16)) & self.p1_D1mask
+    #
+    #     if (temp + temp2 != 0):  # diagonal/
+    #         x = temp & (invboard >> 24)
+    #         x2 = temp2 & (board >> 24)
+    #         if (x + x2 == 0):
+    #             self.p1_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("d1winner", bin(self.p1_D1mask))
+    #     temp = (board & (board >> 10) & (board >> 20)) & self.p1_D2mask
+    #     temp2 = (invboard & (board >> 10) & (board >> 20)) & self.p1_D1mask
+    #     if (temp + temp2 != 0):  # diagonal\
+    #         x = temp & (invboard >> 30)
+    #         x2 = temp2 & (board >> 30)
+    #         if (x + x2 == 0):
+    #             self.p1_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("d2winner", bin(self.p1_D2mask))
+    #
+    #     p1_score = self.count_win(self.p1_Vmask) + self.count_win(self.p1_Hmask) + self.count_win(
+    #         self.p1_D2mask) + self.count_win(self.p1_D1mask)
+    #     print(p1_score)
+    #
+    #     temp = (invboard & (invboard >> 1) & (invboard >> 2)) & self.p0_Vmask
+    #     print("board: ", f"{invboard:#065b}")
+    #     # print("board: ", f"{invboard >> 1:#065b}")
+    #     # print("board: ", f"{invboard >> 2:#065b}")
+    #     # print("board: ", f"{board >> 3:#065b}")
+    #     if (temp != 0):  # vertical
+    #         x = temp & (board >> 3)
+    #         if (x == 0):
+    #             self.p0_Vmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("vp0winner", bin(self.p0_Vmask))
+    #     temp = (invboard & (invboard >> 9) & (invboard >> 18)) & self.p0_Hmask
+    #     temp2 = (board & (invboard >> 9) & (invboard >> 18)) & self.p0_Hmask
+    #
+    #     if (temp + temp2 != 0):  # horizontal
+    #         x = temp & (board >> 27)
+    #         x2 = temp2 & (invboard >> 27)
+    #         if (x + x2 == 0):
+    #             self.p0_Hmask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("hp0winner", bin(self.p0_Hmask))
+    #     temp = (invboard & (invboard >> 8) & (invboard >> 16)) & self.p0_D1mask
+    #     temp2 = (board & (invboard >> 8) & (invboard >> 16)) & self.p0_D1mask
+    #     if (temp + temp2 != 0):  # diagonal /
+    #         x = temp & (board >> 24)
+    #         x2 = temp2 & (invboard >> 24)
+    #         if (x + x2 == 0):
+    #             self.p0_D1mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("d1p0winner", bin(self.p1_D1mask))
+    #     temp = (invboard & (invboard >> 10) & (invboard >> 20)) & self.p0_D2mask
+    #     temp2 = (board & (invboard >> 10) & (invboard >> 20)) & self.p0_D2mask
+    #     if (temp + temp2 != 0):  # diagonal\
+    #         x = temp & (board >> 30)
+    #         x2 = temp2 & (invboard >> 30)
+    #         if (x + x2 == 0):
+    #             self.p0_D2mask &= temp ^ int('7FFFFFFFFFFFFFFF', base=16)
+    #             print("d2p0winner", bin(self.p0_D2mask))
+    #     p0_score = self.count_win(self.p0_Vmask) + self.count_win(self.p0_Hmask) + self.count_win(
+    #         self.p0_D2mask) + self.count_win(self.p0_D1mask)
+    #     print(p0_score)
+    #
+    # def calculation(self, shift):
+    #     sum = 0
+    #     for i in range(shift):
+    #         sum += pow(2, 62 - i)
+    #     return sum
+
+
+if __name__ == '__main__':
+    b = Board()
+    i=0
+    # print(b.convert_numpy())
+    # print(b.connected_three(b.invert_board(b.board),b.board))
+    b.get_3_score(b.board)
+    # print(b.get_neighbours(int("000000000000000000000000000000000000000000000000000000010000001",base=2),1))
     # while 1:
     #     p0_score, p1_score = b.checkwin()
     #     print("Player0 score:\n", p0_score)
@@ -213,3 +352,5 @@ if __name__ == '__main__':
     #        b.insert(int(var), 0)
     #        print(b.get_neighbours(b.board,1))
     #     i+=1
+
+    # 010000000001000000000000000001000000001000001001000001001000001
