@@ -14,11 +14,11 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.ui.B1.clicked.connect(
             lambda x: self.change_state(int("110110110110110110110110110110110110110110110110110110110110110", base=2)))
-        self.player0_style = '''background-color: rgb(0, 255, 0);
+        self.player1_style = '''background-color: rgb(0, 255, 0);
         color: rgb(37, 109, 133);
         border-radius:51px;
         '''
-        self.player1_style = '''background-color: rgb(255, 0, 0);
+        self.player0_style = '''background-color: rgb(255, 0, 0);
         color: rgb(37, 109, 133);
         border-radius:51px;
         '''
@@ -30,7 +30,7 @@ class MainWindowController(QtWidgets.QMainWindow):
                     [self.ui.l50, self.ui.l51, self.ui.l52, self.ui.l53, self.ui.l54, self.ui.l55],
                     [self.ui.l60, self.ui.l61, self.ui.l62, self.ui.l63, self.ui.l64, self.ui.l65]
                     ]
-        self.player_turn=0
+        self.player_turn=1
         self.ui.l05.mouseDoubleClickEvent= lambda _: self.play(0,self.player_turn)
         self.ui.l15.mouseDoubleClickEvent= lambda _: self.play(1,self.player_turn)
         self.ui.l25.mouseDoubleClickEvent= lambda _: self.play(2,self.player_turn)
@@ -56,7 +56,7 @@ class MainWindowController(QtWidgets.QMainWindow):
                     self.col[j][i].setStyleSheet(self.player0_style)
                 else:
                     self.col[j][i].setStyleSheet(self.player1_style)
-
+        print(self.board.get_4_score(self.board.board))
         
 
 
@@ -68,12 +68,13 @@ class MainWindowController(QtWidgets.QMainWindow):
         x=self.minmax.minmax_mutli((self.board.board,-1),4)
         x2=time.time()
         print("time",str(x2-x1))
-        self.board.insert(x[0][1],1)
+        self.board.insert(x[0][1],0)
         self.change_state(self.board.board)
 
 
     def hello(self):
         print("S")
+
 if __name__ == '__main__':
     while 1:
         var = input("go on P1 : ")
