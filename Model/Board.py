@@ -1,13 +1,13 @@
 # module_name, package_name, ClassName, method_name, ExceptionName, function_name,
 # GLOBAL_CONSTANT_NAME, global_var_name, instance_var_name, function_parameter_name, local_var_name.
 import random
-
+import numpy as np
 
 
 class Board:
     def __init__(self):
-        # 00000000|00000000|00000000|00000000|00000000|00000000|101000000
-        self.board = int('00000000000000000000000000000000000000000000000000000000', base=2)
+        # 00000000|00000000|000000000|00000000|00000000|00000000|101000000
+        self.board = int('000000000000000000000000000000000000000000000000000000000000000', base=2)
         self.board_string=f"{self.board:#063b}"
         print("tttt ", f"{self.board:#065b}\n\n")
         self.p1_Hmask=int('7FFFFFFFFFFFFFFF', base=16)
@@ -104,7 +104,9 @@ class Board:
             mask >>= 1;
         # print("Total zero bit is\n", zeros);
         # print("Total one bit is", ones);
-        return zeros;
+        return zeros
+    # def number_of_tiles_incolN(self,board):
+
 
     def update_row_indicator(self,b, col):
 
@@ -200,27 +202,29 @@ class Board:
         p0_score=self.count_win(self.p0_Vmask) + self.count_win(self.p0_Hmask) + self.count_win(self.p0_D2mask) + self.count_win(self.p0_D1mask)
         return p0_score,p1_score
 
-    def convert_numpy(self):
+    def utils(self,board):
         arr = -1 * np.ones((6, 7), dtype=int)
-        board = self.board_string
-        invboard = f"{self.invert_board(b.board):#065b}"
+        invboard = f"{self.invert_board(board):#065b}"
+        board = f"{board:#063b}"
+        num=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
         for i in range(7):
             k = 0
             c = board[5 + (i * 9):11 + (i * 9)]
             c2 = invboard[5 + (i * 9):11 + (i * 9)]
-            print("coloumn", i, c)
             for j in c:
                 if (j == "1"):
-                    print(j)
+                    num[6-i][1]+=1
                     arr[k][i] = j
                 k = k + 1
             k = 0
+            #zeros
             for j2 in c2:
                 if (j2 == "1"):
-                    print(j)
+                    num[6 - i][0] += 1
                     arr[k][i] = 0
                 k = k + 1
-        return arr
+
+        return num
 
     def get_3_score(self, board):
         invboard = self.invert_board(board)
@@ -369,22 +373,4 @@ class Board:
 if __name__ == '__main__':
     b = Board()
     i=0
-    # print(b.convert_numpy())
-    # print(b.connected_three(b.invert_board(b.board),b.board))
-    b.get_3_score(b.board)
-    # print(b.get_neighbours(int("000000000000000000000000000000000000000000000000000000010000001",base=2),1))
-    # while 1:
-    #     p0_score, p1_score = b.checkwin()
-    #     print("Player0 score:\n", p0_score)
-    #     print("Player1 score:\n", p1_score)
-    #     if i % 2:
-    #        var=input("go on P0 : ")
-    #        b.insert(int(var), 1)
-    #        print(b.get_neighbours(b.board, 0))
-    #     else:
-    #        var=input("go on P1 : ")
-    #        b.insert(int(var), 0)
-    #        print(b.get_neighbours(b.board,1))
-    #     i+=1
-
-    # 010000000001000000000000000001000000001000001001000001001000001
+    print(b.utils(int("110000111110000111110000111110000111110000111110000111110000111",base=2)))

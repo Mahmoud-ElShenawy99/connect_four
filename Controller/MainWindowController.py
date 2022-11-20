@@ -13,7 +13,8 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.ui = Ui_GUI()
         self.ui.setupUi(self)
         self.ui.B1.clicked.connect(
-            lambda x: self.change_state(int("110110110110110110110110110110110110110110110110110110110110110", base=2)))
+            lambda x : self.play(-1,self.player_turn))
+
         self.player1_style = '''background-color: rgb(0, 255, 0);
         color: rgb(37, 109, 133);
         border-radius:51px;
@@ -39,7 +40,6 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.ui.l55.mouseDoubleClickEvent= lambda _: self.play(5,self.player_turn)
         self.ui.l65.mouseDoubleClickEvent= lambda _: self.play(6,self.player_turn)
         self.change_state(self.board.board)
-
     def change_state(self, state: int):
         c = [self.board.get_row_indicator(state, 0),
              self.board.get_row_indicator(state, 1),
@@ -61,11 +61,13 @@ class MainWindowController(QtWidgets.QMainWindow):
 
 
     def play(self, col,player):
-        if ( not self.board.insert(col,player)):
+
+        if (col != -1 and  not self.board.insert(col,player)):
+            print("in")
             return
         self.change_state(self.board.board)
         x1=time.time()
-        x=self.minmax.minmax_mutli((self.board.board,-1),4)
+        x=self.minmax.minmax_mutli((self.board.board,-1),7)
         x2=time.time()
         print("time",str(x2-x1))
         self.board.insert(x[0][1],0)

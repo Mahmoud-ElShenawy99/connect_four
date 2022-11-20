@@ -10,17 +10,18 @@ class Minmax:
     def eval_heuristic(self, current_board,col,maximizing_player):
         x= self.b.get_4_score(current_board)
         x1=self.b.get_3_score(current_board)
-        temp=x[0]-40*x[1]+x1[0]-30*x1[1]
-
+        temp=10*x[0]-10*x[1]+2*x1[0]-2*x1[1]
+        # temp=0
         # print(col)
         if col > 1 and col < 5:
             # print(col)
-            temp=(temp+4)*8
+            t = self.b.utils(current_board)
             if maximizing_player:
-                temp*=-1
+                temp += (t[col][0] * 2)
+            else:
+                temp += (t[col][1] * -2)
 
-        # print(x)
-        # print(x1)
+
         return temp
 
     def minmax_mutli(self, current_board, depth):
@@ -39,8 +40,10 @@ class Minmax:
         for r,i in zip(results,range(len(t))):
             print(r)
             # print(bin(r[0][0]))
-            if r[1] > max:
-                # print("in")
+            if r[1] >= max:
+                if r[0][1] not in [2,3,4] and r[1] == max:
+                    print("in",r[0][1])
+                    continue
                 max=r[1]
                 j=r
 
