@@ -61,13 +61,12 @@ class MainWindowController(QtWidgets.QMainWindow):
 
 
     def play(self, col,player):
-
         if (col != -1 and  not self.board.insert(col,player)):
             print("in")
             return
         self.change_state(self.board.board)
         x1=time.time()
-        x=self.minmax.minmax_mutli((self.board.board,-1),7)
+        x=self.minmax.minmax_alpha_mutli((self.board.board,-1),8)
         x2=time.time()
         print("time",str(x2-x1))
         self.board.insert(x[0][1],0)
