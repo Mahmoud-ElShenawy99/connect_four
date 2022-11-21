@@ -4,7 +4,7 @@ from Model.Board import Board
 from PyQt5 import QtWidgets
 from View.MainWindow import Ui_GUI
 from Model.Minmax import Minmax
-
+from treelib import Node,Tree
 class MainWindowController(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
@@ -12,6 +12,7 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.minmax=Minmax()
         self.ui = Ui_GUI()
         self.ui.setupUi(self)
+        self.tree = Tree()
         self.ui.B1.clicked.connect(
             lambda x : self.play(-1,self.player_turn))
 
@@ -66,7 +67,13 @@ class MainWindowController(QtWidgets.QMainWindow):
             return
         self.change_state(self.board.board)
         x1=time.time()
-        x=self.minmax.minmax_alpha_mutli((self.board.board,-1),8)
+        try:
+            self.tree.remove_node(0)
+        except:
+           pass
+        self.tree.create_node( f"{self.board.board:#065b}",0)
+        x=self.minmax.minimax(((self.board.board,-1),3,True,False,self.tree,0))
+        self.tree.show()
         x2=time.time()
         print("time",str(x2-x1))
         self.board.insert(x[0][1],0)

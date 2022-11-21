@@ -76,7 +76,7 @@ class Minmax:
         # print(j)
         return j
     def minimax(self,param):
-        current_board , depth, maximizingPlayer,f=param # current_board fe elawl tb3tlaha tuple (el board,-1)
+        current_board , depth, maximizingPlayer,f,tree,parent=param # current_board fe elawl tb3tlaha tuple (el board,-1)
         if depth == 0:  # or game over in position
             return None, self.eval_heuristic(current_board[0],current_board[1],maximizingPlayer)
 
@@ -86,11 +86,15 @@ class Minmax:
                 neighbours = self.b.get_neighbours(current_board[0], 0)
             else:
                 neighbours = [current_board]
-            for child in neighbours:  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
-                returned_child, eval = self.minimax((child, depth - 1, False,False))
+            for child,i in zip(neighbours,range(len(neighbours))) :  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
+                child_ID = 7*parent+1+i
+                tree.create_node(f"{child[0]:#065b}",child_ID, parent=parent)
+                returned_child, eval = self.minimax((child, depth - 1, False,False,tree,child_ID))
                 if eval > maxEval:
                     chosen_child, maxEval = child, eval
-                    # print(chosen_child)
+                    # print(chosen_child)                      #0
+                                                          #1 2 3 4 5 6 7
+                                                    #8 9 10 11 12 13 14
 
             return chosen_child, maxEval
 
@@ -99,8 +103,10 @@ class Minmax:
 
             neighbours=self.b.get_neighbours(current_board[0], 1)
 
-            for child in neighbours:  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
-                returned_child, eval = self.minimax((child, depth - 1, True,False))
+            for child,i in zip(neighbours,range(len(neighbours))):  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
+                child_ID=7*parent+1+i
+                tree.create_node(f"{child[0]:#065b}",child_ID ,parent=parent)
+                returned_child, eval = self.minimax((child, depth - 1, True,False,tree,child_ID))
                 if eval < minEval:
                     chosen_child, minEval = child, eval
                     # print(chosen_child)
