@@ -26,20 +26,23 @@ class Minmax:
 
         return temp
 
-    def minmax_mutli(self, current_board, depth):
+    def minmax_mutli(self, current_board, depth,tree,parent):
         neighbours=self.b.get_neighbours(current_board[0],0)
         t = []
 
         # for n in neighbours:
            # print(bin(n[0]))
-        for n in neighbours:
-             t.append((n, depth-1 ,True,True))
+        for n,i in zip(neighbours,range(len(neighbours))) :
+             child_ID = 7 * parent + 1 + i
+             tree.create_node(f"{n[0]:#065b}", child_ID, parent=parent)
+             t.append((n, depth-1 ,True,True,tree,child_ID))
         with concurrent.futures.ProcessPoolExecutor() as executor:
             results = executor.map(self.minimax,t)
         max=-math.inf
         j=0
 
         for r,i in zip(results,range(len(t))):
+
             # print(r)
             # print(bin(r[0][0]))
             if r[1] >= max:
@@ -113,7 +116,7 @@ class Minmax:
             return chosen_child, minEval
 
     def minimax_alpha_beta(self, param):  # current_board fe elawl tb3tlaha tuple (el board,-1)
-        current_board, depth, alpha, beta, maximizingPlayer, f = param  # current_board fe elawl tb3tlaha tuple (el board,-1)
+        current_board, depth, alpha, beta, maximizingPlayer, f,tree,parent = param  # current_board fe elawl tb3tlaha tuple (el board,-1)
         if depth == 0:  # or game over in position
             return None, self.eval_heuristic(current_board[0], current_board[1],
                                              maximizingPlayer)  # static evaluation of position
@@ -124,8 +127,10 @@ class Minmax:
                 neighbours = self.b.get_neighbours(current_board[0], 0)
             else:
                 neighbours = [current_board]
-            for child in neighbours:  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
-                returned_child, eval = self.minimax_alpha_beta((child, depth - 1, alpha, beta, False, False))
+            for child,i in zip(neighbours,range(len(neighbours))):  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
+                child_ID = 7 * parent + 1 + i
+                tree.create_node(f"{child[0]:#065b}", child_ID, parent=parent)
+                returned_child, eval = self.minimax_alpha_beta((child, depth - 1, alpha, beta, False, False,tree,child_ID))
                 if eval > maxEval:
                     chosen_child, maxEval = child, eval
                 alpha = max(alpha, maxEval)  # elsa7 maxeval wala eval hna ?
@@ -137,8 +142,10 @@ class Minmax:
             chosen_child, minEval = None, math.inf
             neighbours = self.b.get_neighbours(current_board[0], 1)
 
-            for child in neighbours:  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
-                returned_child, eval = self.minimax_alpha_beta((child, depth - 1, alpha, beta, True, False))
+            for child,i in zip(neighbours,range(len(neighbours))):  #######de lazm tb2a el neighbours bto3 current_board fa lazm nst5dm get_neighbours 34an t4t8l
+                child_ID = 7 * parent + 1 + i
+                tree.create_node(f"{child[0]:#065b}", child_ID, parent=parent)
+                returned_child, eval = self.minimax_alpha_beta((child, depth - 1, alpha, beta, True, False,tree,child_ID))
                 if eval < minEval:
                     chosen_child, minEval = child, eval
                 beta = min(beta, minEval)  # elsa7 mineval wala eval hna?

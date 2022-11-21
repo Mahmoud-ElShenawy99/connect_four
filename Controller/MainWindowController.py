@@ -1,3 +1,4 @@
+import math
 import random
 import time
 from Model.Board import Board
@@ -72,7 +73,9 @@ class MainWindowController(QtWidgets.QMainWindow):
         except:
            pass
         self.tree.create_node( f"{self.board.board:#065b}",0)
-        x=self.minmax.minimax(((self.board.board,-1),3,True,False,self.tree,0))
+        #x=self.minmax.minimax(((self.board.board,-1),3,True,False,self.tree,0))
+        #x = self.minmax.minmax_mutli((self.board.board, -1), 3,self.tree,0)
+        x = self.minmax.minimax_alpha_beta(((self.board.board, -1), 3,-math.inf,math.inf, True, False, self.tree, 0))
         self.tree.show()
         x2=time.time()
         print("time",str(x2-x1))
